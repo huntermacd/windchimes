@@ -10,11 +10,54 @@
       <html>
       <head>
         <title>Go Windchimes!</title>
+        <style>
+          html {
+            height: 100%;
+          }
+
+          body {
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+
+          #goWindchimes {
+            background-color: #000;
+            height: 200px;
+            width: 200px;
+            border-radius: 50%;
+          }
+
+          .playButton {
+            position: relative;
+            top: 50px;
+            left: 65px;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 50px 0 50px 86.6px;
+            border-color: transparent transparent transparent #fff;
+          }
+        </style>
       </head>
       <body>
+        <div id="goWindchimes">
+          <div class="playButton"></div>
+        </div>
         <script>
           var context = new (window.AudioContext || window.webkitAudioContext)();
           var windchimes;
+          var goWindchimes = document.getElementById('goWindchimes');
+          goWindchimes.addEventListener('click', function(){
+            loadChimes('GET', 'windchimes.mp3')
+              .then(function(res) {
+                context.decodeAudioData(res, function(buffer) {
+                  windchimes = buffer;
+                  playChimes();
+                });
+              });
+          }, false);
 
           function loadChimes(method, url) {
             return new Promise(function(resolve, reject) {
@@ -34,14 +77,6 @@
             chimes.connect(context.destination);
             chimes.start(0);
           };
-
-          loadChimes('GET', 'windchimes.mp3')
-            .then(function(res) {
-              context.decodeAudioData(res, function(buffer) {
-                windchimes = buffer;
-                playChimes();
-              });
-            });
         </script>
       </body>
       </html>
